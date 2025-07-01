@@ -70,20 +70,12 @@
       text-decoration: underline;
     }
     /* 确保点击后的高亮效果（Docsify 默认 active 类），使用更通用的选择器并提高优先级 */
-    .sidebar-nav li.active a {
+    .sidebar-nav .active a,
+    .sidebar-nav li.active a,
+    .sidebar-nav ul li.active a {
       border-right: 2px solid var(--theme-color, #42b983) !important;
       color: var(--theme-color, #42b983) !important;
       font-weight: 600 !important;
-    }
-    /* 侧边栏菜单中“天空の小筑”的永久高亮样式 */
-    .sidebar-nav li a.highlight-menu {
-      color: var(--theme-color, #42b983); /* 使用默认绿色主题色 */
-      font-weight: bold;
-    }
-    /* 确保 active 和 highlight-menu 共存时 active 样式一致 */
-    .sidebar-nav li.active a.highlight-menu {
-      color: var(--theme-color, #42b983) !important;
-      border-right: 2px solid var(--theme-color, #42b983) !important;
     }
 
     /* 内容区域样式 */
@@ -259,11 +251,11 @@
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
   <!-- 引入 Docsify 代码复制插件 -->
   <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
-  <!-- 添加 JavaScript 确保占位符被正确设置及高亮侧边栏菜单 -->
+  <!-- 添加 JavaScript 确保占位符被正确设置 -->
   <script>
-    // 页面加载完成后，手动检查和设置搜索框占位符及高亮菜单
+    // 页面加载完成后，手动检查和设置搜索框占位符
     window.addEventListener('load', function() {
-      // 设置搜索框占位符
+      //28 设置搜索框占位符
       const searchInput = document.querySelector('.search input');
       if (searchInput) {
         searchInput.setAttribute('placeholder', '搜索...');
@@ -271,27 +263,6 @@
       } else {
         console.log('Search input not found!');
       }
-
-      // 动态高亮侧边栏菜单中的“天空の小筑”
-      const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
-      sidebarLinks.forEach(link => {
-        if (link.textContent.trim() === '天空の小筑') {
-          link.classList.add('highlight-menu');
-          console.log('Highlighted sidebar menu: 天空の小筑');
-        }
-      });
-    });
-
-    // 监听 Docsify 事件，确保页面切换后仍然高亮“天空の小筑”
-    window.addEventListener('hashchange', function() {
-      setTimeout(function() {
-        const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
-        sidebarLinks.forEach(link => {
-          if (link.textContent.trim() === '天空の小筑') {
-            link.classList.add('highlight-menu');
-          }
-        });
-      }, 100); // 延迟执行，确保 DOM 更新完成
     });
   </script>
 </body>
