@@ -74,6 +74,11 @@
       color: var(--theme-color, #42b983);
       font-weight: 600;
     }
+    /* 侧边栏菜单高亮样式 */
+    .sidebar ul li a.highlight-menu {
+      color: #e74c3c; /* 高亮颜色，例如醒目的红色 */
+      font-weight: bold;
+    }
 
     /* 内容区域样式 */
     .content {
@@ -99,13 +104,21 @@
       color: var(--theme-color, #42b983);
       font-weight: 600;
     }
+    /* 内容中高亮样式 */
+    .markdown-section .highlight {
+      color: #e74c3c; /* 高亮颜色，例如醒目的红色 */
+      font-weight: bold;
+      background-color: rgba(231, 76, 60, 0.1); /* 浅色背景，增加对比 */
+      padding: 0 3px;
+      border-radius: 3px;
+    }
 
-    /* 搜索框样式 - 重点优化显眼性和占位符兼容性 */
+    /* 搜索框样式 */
     .search {
       margin-bottom: 20px;
-      padding: 10px; /* 增加内边距 */
+      padding: 10px;
       border-bottom: 1px solid #eee;
-      background-color: #f8f8f8; /* 添加背景色，增加对比 */
+      background-color: #f8f8f8;
     }
     .search .input-wrap {
       display: flex;
@@ -114,22 +127,21 @@
     .search input {
       outline: 0;
       width: 100%;
-      padding: 0.8em 10px; /* 增加内边距，使输入框更大 */
-      font-size: 16px; /* 增大字体 */
-      border: 1px solid #ccc; /* 添加边框 */
-      border-radius: 4px; /* 圆角 */
-      background-color: #fff; /* 输入框白色背景 */
+      padding: 0.8em 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #fff;
     }
     .search input:focus {
       box-shadow: 0 0 5px var(--theme-color, #42b983);
       border: 1px solid var(--theme-color, #42b983);
     }
-    /* 增强占位符兼容性，确保在各种浏览器中都能显示 */
     .search input::placeholder {
-      color: #777; /* 占位符颜色更深 */
-      font-style: italic; /* 斜体效果 */
-      font-weight: bold; /* 加粗效果 */
-      opacity: 1; /* 确保不透明 */
+      color: #777;
+      font-style: italic;
+      font-weight: bold;
+      opacity: 1;
     }
     .search input::-webkit-input-placeholder {
       color: #777;
@@ -215,7 +227,8 @@
       // 自动跳转的首页内容（默认就是 README.md）
       loadSidebar: true,      // 启用侧边栏
       loadNavbar: true,       // 启用顶部导航栏
-      subMaxLevel: 2,         // 支持多级标题
+      subMaxLevel: 2,         // 支持多级标题，显示子标题
+      auto2top: true,         // 跳转到页面顶部
 
       // 搜索插件配置
       search: {
@@ -224,6 +237,13 @@
         placeholder: '搜索...',  // 确保占位符文字设置正确
         noData: '未找到结果！',      // 无搜索结果时的提示
         depth: 2              // 搜索标题的最大层级
+      },
+
+      // 启用代码复制插件配置
+      copyCode: {
+        buttonText: '复制',       // 复制按钮的默认文本
+        errorText: '复制失败',     // 复制失败时的提示文本
+        successText: '已复制'      // 复制成功时的提示文本
       }
     }
   </script>
@@ -231,10 +251,13 @@
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
   <!-- 引入 Docsify 搜索插件 -->
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-  <!-- 添加 JavaScript 确保占位符被正确设置 -->
+  <!-- 引入 Docsify 代码复制插件 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
+  <!-- 添加 JavaScript 确保占位符被正确设置及高亮侧边栏菜单 -->
   <script>
     // 页面加载完成后，手动检查和设置搜索框占位符
     window.addEventListener('load', function() {
+      // 设置搜索框占位符
       const searchInput = document.querySelector('.search input');
       if (searchInput) {
         searchInput.setAttribute('placeholder', '搜索...');
@@ -242,6 +265,14 @@
       } else {
         console.log('Search input not found!');
       }
+
+      // 动态高亮侧边栏菜单中的“天空の小筑”
+      const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+      sidebarLinks.forEach(link => {
+        if (link.textContent.includes('天空の小筑')) {
+          link.classList.add('highlight-menu');
+        }
+      });
     });
   </script>
 </body>
