@@ -103,7 +103,7 @@
       font-weight: 600;
     }
 
-    /* 搜索框样式 - 重点优化显眼性 */
+    /* 搜索框样式 - 重点优化显眼性和占位符兼容性 */
     .search {
       margin-bottom: 20px;
       padding: 10px; /* 增加内边距 */
@@ -127,10 +127,36 @@
       box-shadow: 0 0 5px var(--theme-color, #42b983);
       border: 1px solid var(--theme-color, #42b983);
     }
+    /* 增强占位符兼容性，确保在各种浏览器中都能显示 */
     .search input::placeholder {
       color: #777; /* 占位符颜色更深 */
       font-style: italic; /* 斜体效果 */
       font-weight: bold; /* 加粗效果 */
+      opacity: 1; /* 确保不透明 */
+    }
+    .search input::-webkit-input-placeholder {
+      color: #777;
+      font-style: italic;
+      font-weight: bold;
+      opacity: 1;
+    }
+    .search input::-moz-placeholder {
+      color: #777;
+      font-style: italic;
+      font-weight: bold;
+      opacity: 1;
+    }
+    .search input:-ms-input-placeholder {
+      color: #777;
+      font-style: italic;
+      font-weight: bold;
+      opacity: 1;
+    }
+    .search input::-ms-input-placeholder {
+      color: #777;
+      font-style: italic;
+      font-weight: bold;
+      opacity: 1;
     }
     .search .clear-button {
       cursor: pointer;
@@ -198,7 +224,7 @@
       search: {
         maxAge: 86400000,    // 搜索结果缓存时间，单位为毫秒（这里设置为1天）
         paths: 'auto',        // 搜索路径，auto 表示自动索引所有 Markdown 文件
-        placeholder: '搜索...',  // 简洁明了的占位符文字，显眼性强
+        placeholder: '搜索...',  // 确保占位符文字设置正确
         noData: '未找到结果！',      // 无搜索结果时的提示
         depth: 2              // 搜索标题的最大层级
       }
@@ -208,5 +234,18 @@
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
   <!-- 引入 Docsify 搜索插件 -->
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <!-- 添加 JavaScript 确保占位符被正确设置 -->
+  <script>
+    // 页面加载完成后，手动检查和设置搜索框占位符
+    window.addEventListener('load', function() {
+      const searchInput = document.querySelector('.search input');
+      if (searchInput) {
+        searchInput.setAttribute('placeholder', '搜索...');
+        console.log('Placeholder set to: 搜索...');
+      } else {
+        console.log('Search input not found!');
+      }
+    });
+  </script>
 </body>
 </html>
