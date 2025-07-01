@@ -69,13 +69,25 @@
     .sidebar ul li a:hover {
       text-decoration: underline;
     }
-    /* 确保点击后的高亮效果（Docsify 默认 active 类），使用更通用的选择器并提高优先级 */
-    .sidebar-nav .active a,
-    .sidebar-nav li.active a,
-    .sidebar-nav ul li.active a {
-      border-right: 2px solid var(--theme-color, #42b983) !important;
-      color: var(--theme-color, #42b983) !important;
+    /* 侧边栏高亮样式 - 修改为更精确的选择器 */
+    .sidebar-nav li.active > a {
+      border-right: 2px solid var(--theme-color) !important;
+      color: var(--theme-color) !important;
       font-weight: 600 !important;
+    }
+    
+    /* 默认高亮第一个菜单项（天空の小筑） */
+    .sidebar-nav ul li:first-child > a {
+      border-right: 2px solid var(--theme-color);
+      color: var(--theme-color);
+      font-weight: 600;
+    }
+    /* 当其他菜单项被激活时，取消第一个菜单项的高亮 */
+    .sidebar-nav li.active ~ li:first-child > a,
+    .sidebar-nav li.active + li:first-child > a {
+      border-right: none !important;
+      color: #505d6b !important;
+      font-weight: 400 !important;
     }
 
     /* 内容区域样式 */
@@ -102,13 +114,13 @@
       color: var(--theme-color, #42b983);
       font-weight: 600;
     }
-    /* 内容中标题“天空の小筑”的高亮样式 */
+    /* 取消内容中标题的高亮样式 */
     .markdown-section .highlight {
-      color: var(--theme-color, #42b983); /* 使用默认绿色主题色 */
-      font-weight: bold;
-      background-color: rgba(66, 185, 131, 0.1); /* 浅绿色背景，增加对比 */
-      padding: 0 3px;
-      border-radius: 3px;
+      color: inherit;
+      font-weight: normal;
+      background-color: transparent;
+      padding: 0;
+      border-radius: 0;
     }
 
     /* 搜索框样式 */
@@ -255,13 +267,21 @@
   <script>
     // 页面加载完成后，手动检查和设置搜索框占位符
     window.addEventListener('load', function() {
-      //28 设置搜索框占位符
+      // 设置搜索框占位符
       const searchInput = document.querySelector('.search input');
       if (searchInput) {
         searchInput.setAttribute('placeholder', '搜索...');
         console.log('Placeholder set to: 搜索...');
       } else {
         console.log('Search input not found!');
+      }
+      
+      // 确保第一个菜单项（天空の小筑）默认高亮
+      const firstMenuItem = document.querySelector('.sidebar-nav ul li:first-child a');
+      if (firstMenuItem && !document.querySelector('.sidebar-nav li.active')) {
+        firstMenuItem.style.borderRight = '2px solid #42b983';
+        firstMenuItem.style.color = '#42b983';
+        firstMenuItem.style.fontWeight = '600';
       }
     });
   </script>
