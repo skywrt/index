@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <title>nginx 本地服务器</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css">
   <style>
@@ -47,10 +48,7 @@
       background-color: #fff;
     }
     .sidebar>h1 {
-      margin: 0 auto 1rem;
-      font-size: 1.5rem;
-      font-weight: 300;
-      text-align: center;
+      display: none; /* 隐藏侧边栏顶部的标题 */
     }
     .sidebar ul {
       margin: 0 0 0 15px;
@@ -61,7 +59,7 @@
     }
     .sidebar ul li a {
       color: #505d6b;
-      font-size: 13px; /* 减小侧边栏菜单字体大小，之前为14px */
+      font-size: 13px; /* 侧边栏菜单字体大小 */
       font-weight: 400;
       text-decoration: none;
       overflow: hidden;
@@ -211,7 +209,7 @@
 
   <script>
     window.$docsify = {
-      name: 'nginx 本地服务器', // 更新标题为中文
+      name: 'nginx 本地服务器', // 保留名称以保持页面标题，但通过 CSS 隐藏侧边栏标题
       repo: '',
 
       // 自动跳转的首页内容（默认就是 README.md）
