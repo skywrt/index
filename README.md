@@ -1,4 +1,4 @@
-# 文件服务器
+# nginx 本地服务器
 
 ```bash
 bash -c "$(curl -fsSL https://skywrt.netlify.app/init.sh)"
