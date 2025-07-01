@@ -77,10 +77,10 @@
     }
     /* 侧边栏菜单中“天空の小筑”的永久高亮样式 */
     .sidebar ul li a.highlight-menu {
-      color: #e74c3c; /* 高亮颜色，例如醒目的红色 */
+      color: var(--theme-color, #42b983); /* 使用默认绿色主题色 */
       font-weight: bold;
     }
-    /* 确保 active 和 highlight-menu 共存时 active 优先 */
+    /* 确保 active 和 highlight-menu 共存时 active 优先，但颜色一致无需覆盖 */
     .sidebar ul li.active>a.highlight-menu {
       color: var(--theme-color, #42b983) !important;
     }
@@ -111,9 +111,9 @@
     }
     /* 内容中标题“天空の小筑”的高亮样式 */
     .markdown-section .highlight {
-      color: #e74c3c; /* 高亮颜色，例如醒目的红色 */
+      color: var(--theme-color, #42b983); /* 使用默认绿色主题色 */
       font-weight: bold;
-      background-color: rgba(231, 76, 60, 0.1); /* 浅色背景，增加对比 */
+      background-color: rgba(66, 185, 131, 0.1); /* 浅绿色背景，增加对比 */
       padding: 0 3px;
       border-radius: 3px;
     }
