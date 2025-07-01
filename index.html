@@ -33,7 +33,7 @@
       content: "Loading...";
     }
 
-    /* 侧边栏样式 */
+    /* 侧边栏样式 - 完全重写 */
     .sidebar {
       border-right: 1px solid rgba(0, 0, 0, 0.07);
       overflow-y: auto;
@@ -48,7 +48,7 @@
       background-color: #fff;
     }
     .sidebar>h1 {
-      display: none; /* 隐藏侧边栏顶部的标题 */
+      display: none;
     }
     .sidebar ul {
       margin: 0 0 0 15px;
@@ -59,39 +59,34 @@
     }
     .sidebar ul li a {
       color: #505d6b;
-      font-size: 13px; /* 侧边栏菜单字体大小 */
+      font-size: 14px;
       font-weight: 400;
       text-decoration: none;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      display: block;
+      padding: 8px 15px;
+      transition: all 0.2s ease;
     }
     .sidebar ul li a:hover {
-      text-decoration: underline;
+      color: var(--theme-color);
     }
     
-    /* 修正后的侧边栏高亮样式 */
-    .sidebar-nav > ul > li > a.active {
-      border-right: 2px solid var(--theme-color) !important;
-      color: var(--theme-color) !important;
-      font-weight: 600 !important;
+    /* 新的高亮样式 */
+    .sidebar-nav li.active > a,
+    .sidebar-nav a.active {
+      border-right: 2px solid var(--theme-color);
+      color: var(--theme-color);
+      font-weight: 600;
+      background-color: rgba(66, 185, 131, 0.1);
     }
     
-    /* 默认高亮第一个菜单项（天空の小筑） */
+    /* 默认高亮第一个菜单项 */
     .sidebar-nav > ul > li:first-child > a {
       border-right: 2px solid var(--theme-color);
       color: var(--theme-color);
       font-weight: 600;
-    }
-    
-    /* 当其他菜单项被激活时，取消第一个菜单项的高亮 */
-    .sidebar-nav > ul > li:first-child > a.active,
-    .sidebar-nav > ul > li.active:first-child > a,
-    .sidebar-nav > ul > li.active ~ li:first-child > a,
-    .sidebar-nav > ul > li.active + li:first-child > a {
-      border-right: none !important;
-      color: #505d6b !important;
-      font-weight: 400 !important;
     }
 
     /* 内容区域样式 */
@@ -115,18 +110,10 @@
       font-weight: 600;
     }
     .markdown-section a {
-      color: var(--theme-color, #42b983);
+      color: var(--theme-color);
       font-weight: 600;
     }
-    /* 取消内容中标题的高亮样式 */
-    .markdown-section .highlight {
-      color: inherit;
-      font-weight: normal;
-      background-color: transparent;
-      padding: 0;
-      border-radius: 0;
-    }
-
+    
     /* 搜索框样式 */
     .search {
       margin-bottom: 20px;
@@ -148,66 +135,15 @@
       background-color: #fff;
     }
     .search input:focus {
-      box-shadow: 0 0 5px var(--theme-color, #42b983);
-      border: 1px solid var(--theme-color, #42b983);
+      box-shadow: 0 0 5px var(--theme-color);
+      border: 1px solid var(--theme-color);
     }
     .search input::placeholder {
       color: #777;
       font-style: italic;
       font-weight: bold;
-      opacity: 1;
     }
-    .search input::-webkit-input-placeholder {
-      color: #777;
-      font-style: italic;
-      font-weight: bold;
-      opacity: 1;
-    }
-    .search input::-moz-placeholder {
-      color: #777;
-      font-style: italic;
-      font-weight: bold;
-      opacity: 1;
-    }
-    .search input:-ms-input-placeholder {
-      color: #777;
-      font-style: italic;
-      font-weight: bold;
-      opacity: 1;
-    }
-    .search input::-ms-input-placeholder {
-      color: #777;
-      font-style: italic;
-      font-weight: bold;
-      opacity: 1;
-    }
-    .search .clear-button {
-      cursor: pointer;
-      width: 36px;
-      text-align: right;
-      display: none;
-    }
-    .search .clear-button.show {
-      display: block;
-    }
-    .search .results-panel {
-      display: none;
-    }
-    .search .results-panel.show {
-      display: block;
-    }
-    .search p {
-      font-size: 14px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-    .search p.empty {
-      text-align: center;
-    }
-
+    
     /* 响应式设计 - 移动端适配 */
     @media screen and (max-width: 768px) {
       .sidebar {
@@ -237,12 +173,10 @@
     window.$docsify = {
       name: 'nginx 本地服务器',
       repo: '',
-
       loadSidebar: true,
       loadNavbar: true,
       subMaxLevel: 2,
       auto2top: true,
-
       search: {
         maxAge: 86400000,
         paths: 'auto',
@@ -250,19 +184,55 @@
         noData: '未找到结果！',
         depth: 2
       },
-
       copyCode: {
         buttonText: '复制',
         errorText: '复制失败',
         successText: '已复制'
+      },
+      // 添加路由钩子
+      hooks: {
+        init: function() {
+          // 确保初始化时设置第一个菜单项高亮
+          const firstItem = document.querySelector('.sidebar-nav > ul > li:first-child > a');
+          if (firstItem) {
+            firstItem.classList.add('active');
+          }
+        },
+        done: function() {
+          // 每次路由变化后更新高亮状态
+          updateActiveMenuItem();
+        }
+      }
+    };
+
+    // 更新活动菜单项的函数
+    function updateActiveMenuItem() {
+      // 移除所有active类
+      document.querySelectorAll('.sidebar-nav a').forEach(a => {
+        a.classList.remove('active');
+      });
+      
+      // 获取当前路径
+      const currentPath = window.location.hash.replace('#/', '');
+      
+      // 尝试找到匹配的菜单项
+      let activeLink = null;
+      if (currentPath) {
+        activeLink = document.querySelector(`.sidebar-nav a[href="#/${currentPath}"]`);
+      }
+      
+      // 如果找到匹配项则高亮，否则高亮第一个菜单项
+      if (activeLink) {
+        activeLink.classList.add('active');
+      } else {
+        const firstItem = document.querySelector('.sidebar-nav > ul > li:first-child > a');
+        if (firstItem) {
+          firstItem.classList.add('active');
+        }
       }
     }
-  </script>
 
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
-  <script>
+    // 页面加载完成后初始化
     window.addEventListener('load', function() {
       // 设置搜索框占位符
       const searchInput = document.querySelector('.search input');
@@ -270,32 +240,19 @@
         searchInput.setAttribute('placeholder', '搜索...');
       }
       
-      // 确保第一个菜单项（天空の小筑）默认高亮
-      const firstMenuItem = document.querySelector('.sidebar-nav > ul > li:first-child > a');
-      if (firstMenuItem && !document.querySelector('.sidebar-nav > ul > li > a.active')) {
-        firstMenuItem.style.borderRight = '2px solid #42b983';
-        firstMenuItem.style.color = '#42b983';
-        firstMenuItem.style.fontWeight = '600';
-      }
+      // 初始高亮设置
+      updateActiveMenuItem();
       
       // 监听侧边栏点击事件
-      document.querySelector('.sidebar-nav').addEventListener('click', function(e) {
-        const target = e.target.closest('a');
-        if (target && target.parentNode.parentNode.classList.contains('sidebar-nav')) {
-          // 移除所有高亮
-          document.querySelectorAll('.sidebar-nav > ul > li > a').forEach(item => {
-            item.style.borderRight = 'none';
-            item.style.color = '#505d6b';
-            item.style.fontWeight = '400';
-          });
-          
-          // 添加当前点击项的高亮
-          target.style.borderRight = '2px solid #42b983';
-          target.style.color = '#42b983';
-          target.style.fontWeight = '600';
-        }
+      document.querySelector('.sidebar-nav')?.addEventListener('click', function(e) {
+        // 短暂延迟后更新高亮状态，确保路由已更新
+        setTimeout(updateActiveMenuItem, 50);
       });
     });
   </script>
+
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
 </body>
 </html>
