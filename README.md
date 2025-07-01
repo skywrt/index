@@ -1,4 +1,4 @@
-# Index of
+# 文件服务器
 
 ```bash
 bash -c "$(curl -fsSL https://skywrt.netlify.app/init.sh)"
