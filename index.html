@@ -5,6 +5,23 @@
   <title>nginx local server</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css">
+  <style>
+    .docsify-search-container {
+      margin-bottom: 15px; /* 增加与其他元素的间距 */
+    }
+    .docsify-search-input {
+      width: 100%; /* 占满容器宽度 */
+      padding: 10px; /* 增加内边距，使输入框更明显 */
+      border: 1px solid #ccc; /* 添加边框 */
+      border-radius: 4px; /* 圆角效果 */
+      font-size: 16px; /* 增大字体 */
+      color: #333; /* 文本颜色 */
+    }
+    .docsify-search-input::placeholder {
+      color: #888; /* 占位符颜色，稍浅但仍可读 */
+      font-style: italic; /* 斜体效果，使占位符更醒目 */
+    }
+  </style>
 </head>
 <body>
   <div id="app">加载中...</div>
@@ -23,7 +40,7 @@
       search: {
         maxAge: 86400000,    // 搜索结果缓存时间，单位为毫秒（这里设置为1天）
         paths: 'auto',        // 搜索路径，auto 表示自动索引所有 Markdown 文件
-        placeholder: '搜索文档...',  // 搜索框占位符文字
+        placeholder: '搜索...',  // 修改为更简洁的占位符文字
         noData: '未找到结果！',      // 无搜索结果时的提示
         depth: 2              // 搜索标题的最大层级
       }
