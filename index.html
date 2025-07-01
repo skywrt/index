@@ -1,26 +1,212 @@
-<style>
-  .search {
-    margin-bottom: 20px;
-    padding: 6px;
-    border-bottom: 1px solid #eee;
-    background-color: #f8f8f8; /* 添加背景色，增加对比度 */
-  }
-  .search input {
-    outline: 0;
-    width: 100%;
-    padding: .8em 10px; /* 增加内边距，显得更大 */
-    font-size: 16px; /* 增大字体 */
-    border: 1px solid #ccc; /* 添加边框 */
-    border-radius: 4px; /* 圆角 */
-    background-color: #fff; /* 输入框白色背景 */
-  }
-  .search input:focus {
-    box-shadow: 0 0 5px var(--theme-color, #42b983);
-    border: 1px solid var(--theme-color, #42b983);
-  }
-  .search input::placeholder {
-    color: #777; /* 占位符颜色更深 */
-    font-style: italic; /* 斜体效果 */
-    font-weight: bold; /* 加粗 */
-  }
-</style>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>nginx local server</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css">
+  <style>
+    /* 基础样式和主题色变量 */
+    :root {
+      --theme-color: #42b983; /* Docsify 默认绿色主题 */
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      color: #34495e;
+      font-family: Source Sans Pro, Helvetica Neue, Arial, sans-serif;
+      font-size: 15px;
+      margin: 0;
+      overflow-x: hidden;
+      background-color: #fff;
+      height: 100%;
+    }
+    div#app {
+      font-size: 30px;
+      font-weight: lighter;
+      margin: 40vh auto;
+      text-align: center;
+    }
+    div#app:empty:before {
+      content: "Loading...";
+    }
+
+    /* 侧边栏样式 */
+    .sidebar {
+      border-right: 1px solid rgba(0, 0, 0, 0.07);
+      overflow-y: auto;
+      padding: 40px 0 0;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      transition: transform 0.25s ease-out;
+      width: 300px;
+      z-index: 20;
+      background-color: #fff;
+    }
+    .sidebar>h1 {
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+      font-weight: 300;
+      text-align: center;
+    }
+    .sidebar ul {
+      margin: 0 0 0 15px;
+      padding: 0;
+    }
+    .sidebar ul li {
+      list-style: none;
+    }
+    .sidebar ul li a {
+      color: #505d6b;
+      font-size: 14px;
+      font-weight: 400;
+      text-decoration: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .sidebar ul li a:hover {
+      text-decoration: underline;
+    }
+    .sidebar ul li.active>a {
+      border-right: 2px solid var(--theme-color, #42b983);
+      color: var(--theme-color, #42b983);
+      font-weight: 600;
+    }
+
+    /* 内容区域样式 */
+    .content {
+      padding-top: 60px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 300px;
+      transition: left 0.25s ease;
+    }
+    .markdown-section {
+      margin: 0 auto;
+      max-width: 80%;
+      padding: 30px 15px 40px;
+      position: relative;
+    }
+    .markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4, .markdown-section strong {
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    .markdown-section a {
+      color: var(--theme-color, #42b983);
+      font-weight: 600;
+    }
+
+    /* 搜索框样式 - 重点优化显眼性 */
+    .search {
+      margin-bottom: 20px;
+      padding: 10px; /* 增加内边距 */
+      border-bottom: 1px solid #eee;
+      background-color: #f8f8f8; /* 添加背景色，增加对比 */
+    }
+    .search .input-wrap {
+      display: flex;
+      align-items: center;
+    }
+    .search input {
+      outline: 0;
+      width: 100%;
+      padding: 0.8em 10px; /* 增加内边距，使输入框更大 */
+      font-size: 16px; /* 增大字体 */
+      border: 1px solid #ccc; /* 添加边框 */
+      border-radius: 4px; /* 圆角 */
+      background-color: #fff; /* 输入框白色背景 */
+    }
+    .search input:focus {
+      box-shadow: 0 0 5px var(--theme-color, #42b983);
+      border: 1px solid var(--theme-color, #42b983);
+    }
+    .search input::placeholder {
+      color: #777; /* 占位符颜色更深 */
+      font-style: italic; /* 斜体效果 */
+      font-weight: bold; /* 加粗效果 */
+    }
+    .search .clear-button {
+      cursor: pointer;
+      width: 36px;
+      text-align: right;
+      display: none;
+    }
+    .search .clear-button.show {
+      display: block;
+    }
+    .search .results-panel {
+      display: none;
+    }
+    .search .results-panel.show {
+      display: block;
+    }
+    .search p {
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .search p.empty {
+      text-align: center;
+    }
+
+    /* 响应式设计 - 移动端适配 */
+    @media screen and (max-width: 768px) {
+      .sidebar {
+        left: -300px;
+        transition: transform 0.25s ease-out;
+      }
+      .content {
+        left: 0;
+        max-width: 100vw;
+        position: static;
+        padding-top: 20px;
+        transition: transform 0.25s ease;
+      }
+      body.close .sidebar {
+        transform: translateX(300px);
+      }
+      body.close .content {
+        transform: translateX(300px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">加载中...</div>
+
+  <script>
+    window.$docsify = {
+      name: 'nginx local server',
+      repo: '',
+
+      // 自动跳转的首页内容（默认就是 README.md）
+      loadSidebar: true,      // 启用侧边栏
+      loadNavbar: true,       // 启用顶部导航栏
+      subMaxLevel: 2,         // 支持多级标题
+
+      // 搜索插件配置
+      search: {
+        maxAge: 86400000,    // 搜索结果缓存时间，单位为毫秒（这里设置为1天）
+        paths: 'auto',        // 搜索路径，auto 表示自动索引所有 Markdown 文件
+        placeholder: '搜索...',  // 简洁明了的占位符文字，显眼性强
+        noData: '未找到结果！',      // 无搜索结果时的提示
+        depth: 2              // 搜索标题的最大层级
+      }
+    }
+  </script>
+
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+  <!-- 引入 Docsify 搜索插件 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+</body>
+</html>
