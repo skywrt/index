@@ -12,7 +12,7 @@ FILES=(
   "start.sh"
 )
 
-BASE_URL="https://getindex.netlify.app/nginx"
+BASE_URL="https://skywrt.netlify.app/nginx"
 
 # 下载所有文件
 for file in "${FILES[@]}"; do
